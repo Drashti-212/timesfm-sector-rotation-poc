@@ -26,26 +26,26 @@ All code and tests are authored here but executed only in Google Colab; no task 
     - Assert the p10 <= point <= p90 majority-of-steps check and the `infer_is_positive` ForecastConfig-field confirmation; assert non-zero return on simulated model-load and forecast failures
     - _Requirements: 1.5, 1.6, 1.7, 1.8_
 
-- [ ] 2. Data loader
+- [x] 2. Data loader
   - Create `src/data.py` with `load_prices(csv_path: str) -> pandas.DataFrame`: parse `Date`, index ascending, one float column per ticker (11 sectors + SPY), NaN where missing
   - Validate the required tickers are present; do NOT slice by date (slicing lives only in the accessor)
   - _Requirements: 2.4_
 
-- [ ] 3. Look-ahead-safe history accessor (highest priority)
-  - [ ] 3.1 Implement `HistoryAccessor` in `src/history.py`
+- [x] 3. Look-ahead-safe history accessor (highest priority)
+  - [x] 3.1 Implement `HistoryAccessor` in `src/history.py`
     - `__init__(prices)` wraps the loaded table; `get_history(ticker, decision_date) -> pandas.Series` returns only observations dated `<= decision_date`, ascending, NaN/empty excluded
     - Raise `KeyError` naming the ticker when absent (no partial data); return an empty Series when nothing qualifies
     - _Requirements: 2.1, 2.2, 2.3, 2.6, 2.7, 2.8_
 
-  - [ ] 3.2 Write property test: accessor never returns future data
+  - [x] 3.2 Write property test: accessor never returns future data
     - **Property 1: History accessor never returns future data** — `max(index) <= decision_date` and no observation dated after the decision date is present
     - **Validates: Requirements 2.2, 2.5**
 
-  - [ ]* 3.3 Write property test: returned history is ascending and NaN-free
+  - [x]* 3.3 Write property test: returned history is ascending and NaN-free
     - **Property 2: Returned history is ascending and NaN-free**
     - **Validates: Requirements 2.3, 2.6**
 
-  - [ ] 3.4 Write mandated look-ahead and error unit tests
+  - [x] 3.4 Write mandated look-ahead and error unit tests
     - Date-bound test: for a range of decision dates, `max` date in any returned series `<= decision_date` (Req 2.5)
     - Missing-ticker `KeyError` names the ticker (Req 2.7); empty-history return when nothing qualifies (Req 2.8)
     - _Requirements: 2.5, 2.7, 2.8_
