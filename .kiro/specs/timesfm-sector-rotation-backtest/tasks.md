@@ -69,14 +69,14 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - _Requirements: 3.6_
 
 - [ ] 5. Forecaster and atomic per-date forecast cache
-  - [ ] 5.1 Implement `ForecastRecord` and `ForecastCache` in `src/forecast.py`
+  - [x] 5.1 Implement `ForecastRecord` and `ForecastCache` in `src/forecast.py`
     - `ForecastRecord` dataclass: ticker, decision_date, context_points, point_log, p10_log, p90_log (20 values each), last_log_price
     - `ForecastCache(cache_path)` parquet-backed, run-time-configurable path (may be a Google Drive path); `get`, `all_records`
     - `contains_date` returns True only when every expected ticker for the date is cached (fully cached)
     - `put_date` commits all of a date's records atomically (temp file then replace) only after every record is complete, so a date is fully present or entirely absent
     - _Requirements: 4.9, 4.10, 4.11, 4.12_
 
-  - [ ] 5.2 Implement the `Forecaster` and return derivations
+  - [x] 5.2 Implement the `Forecaster` and return derivations
     - `Forecaster.forecast_date(decision_date, tickers)`: pull each ticker's history via `get_history`, convert to log prices, take most recent 512 (or all, recording `context_points`), issue ONE batched `model.forecast(horizon=20, inputs=[...])` call, return one `ForecastRecord` per ticker; forecast the 11 sectors only (SPY is benchmark, not forecast)
     - `Forecaster.run(decision_dates, universe)`: iterate in generation order, skip fully cached dates via `contains_date`, otherwise `forecast_date` then `put_date`; resumable
     - TimesFM zero-shot, no fine-tuning/covariates, `infer_is_positive=False`
@@ -87,7 +87,7 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - **Property 3: Forecaster reads prices only through the accessor** — using a spy/double accessor that records calls, assert no other price read occurs
     - **Validates: Requirements 2.4, 2.9, 4.1**
 
-  - [ ] 5.4 Write accessor-only mandated unit test (TimesFM mocked)
+  - [x] 5.4 Write accessor-only mandated unit test (TimesFM mocked)
     - Assert the Forecaster obtains input series exclusively through `get_history` (spy accessor), model mocked
     - _Requirements: 2.9_
 

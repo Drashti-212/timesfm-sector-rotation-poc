@@ -134,6 +134,42 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793254165344
       }
+    ],
+    "5.1 Implement `ForecastRecord` and `ForecastCache` in `src/forecast.py`": [
+      {
+        "executionId": "80065208-77f5-4b80-8f07-9dfbb05e9cd7",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254681137
+      },
+      {
+        "executionId": "80065208-77f5-4b80-8f07-9dfbb05e9cd7",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254984630
+      }
+    ],
+    "5.2 Implement the `Forecaster` and return derivations": [
+      {
+        "executionId": "80065208-77f5-4b80-8f07-9dfbb05e9cd7",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254686910
+      },
+      {
+        "executionId": "80065208-77f5-4b80-8f07-9dfbb05e9cd7",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254989766
+      }
+    ],
+    "5.4 Write accessor-only mandated unit test (TimesFM mocked)": [
+      {
+        "executionId": "80065208-77f5-4b80-8f07-9dfbb05e9cd7",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254994339
+      },
+      {
+        "executionId": "80065208-77f5-4b80-8f07-9dfbb05e9cd7",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793255159650
+      }
     ]
   }
 }
