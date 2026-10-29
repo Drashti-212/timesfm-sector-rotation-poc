@@ -280,6 +280,140 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793258407245
       }
+    ],
+    "7.1 Implement `src/evaluation.py`": [
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258595350
+      },
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258785817
+      }
+    ],
+    "7.2 Write unit test: realised simple return equals exp(log) - 1": [
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258790974
+      },
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259029088
+      }
+    ],
+    "7.3 Write import-boundary unit test enforcing the evaluation read path": [
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258795795
+      },
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259034206
+      }
+    ],
+    "7. Evaluation module (sole realised-return / forward-read path)": [
+      {
+        "executionId": "54bff166-5e19-4925-9d14-fc28e7874f60",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259034359
+      }
+    ],
+    "8.1 Implement `src/backtest.py`": [
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259405232
+      },
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259582414
+      }
+    ],
+    "8.4 Write property test: turnover equals summed absolute weight changes": [
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259587409
+      },
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259831527
+      }
+    ],
+    "8.5 Write property test: transaction cost is linear in bps and turnover": [
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259593251
+      },
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259836430
+      }
+    ],
+    "8.6 Write unit test: too-few-sectors ValueError names the date and count": [
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259599975
+      },
+      {
+        "executionId": "f781934b-335c-4447-aa06-bdd8daa9e380",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793259841389
+      }
+    ],
+    "8.2 Write property test: long-only portfolio weights sum to 1": [
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793260225786
+      },
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262139453
+      }
+    ],
+    "8.3 Write property test: long-short portfolio is dollar-neutral with gross exposure 2": [
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793260230802
+      },
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262144583
+      }
+    ],
+    "8.7 Write property test: signal formation is invariant to future data (future-perturbation)": [
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793260236191
+      },
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262149519
+      }
+    ],
+    "8. Backtest engine with transaction costs": [
+      {
+        "executionId": "399a80e3-8189-4268-a4aa-284a87031e36",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262149650
+      }
     ]
   }
 }

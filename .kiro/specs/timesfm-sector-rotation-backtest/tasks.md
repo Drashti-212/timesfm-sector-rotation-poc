@@ -121,49 +121,49 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - **Property 10: Random baseline is reproducible under a fixed seed** — identical orderings per date across runs; exactly 1,000 strategies
     - **Validates: Requirements 5.7, 5.9, 11.4**
 
-- [ ] 7. Evaluation module (sole realised-return / forward-read path)
-  - [ ] 7.1 Implement `src/evaluation.py`
+- [x] 7. Evaluation module (sole realised-return / forward-read path)
+  - [x] 7.1 Implement `src/evaluation.py`
     - `realised_log_return(accessor, ticker, decision_date, next_date)` = log price at `next_date` minus last observed log price at `decision_date`, read via `get_history(ticker, next_date)`
     - `realised_simple_return(...)` = `exp(realised_log_return(...)) - 1`
     - This is the only component permitted to read forward prices; it runs after all signals are formed and is imported only by backtest and metrics
     - _Requirements: 2.4, 6.1, 7.8_
 
-  - [ ]* 7.2 Write unit test: realised simple return equals exp(log) - 1
+  - [x]* 7.2 Write unit test: realised simple return equals exp(log) - 1
     - For sampled tickers/dates, confirm the two realised-return views are consistent
     - _Requirements: 6.1, 7.8_
 
-  - [ ] 7.3 Write import-boundary unit test enforcing the evaluation read path
+  - [x] 7.3 Write import-boundary unit test enforcing the evaluation read path
     - Parse the `src/` directory with Python's `ast` module and FAIL if `forecast.py` or `baselines.py` imports `evaluation` (directly as `import evaluation` or via `from evaluation import ...`); only `backtest.py` and `metrics.py` are permitted to import `evaluation`
     - _Requirements: 2.4_
 
-- [ ] 8. Backtest engine with transaction costs
-  - [ ] 8.1 Implement `src/backtest.py`
+- [x] 8. Backtest engine with transaction costs
+  - [x] 8.1 Implement `src/backtest.py`
     - `long_only_weights(ranking)` top 3 at +1/3 (sums to 1); `long_short_weights(ranking)` top 3 +1/3, bottom 3 -1/3 (net 0, gross 2)
     - `turnover(prev, new)` = sum of absolute per-sector weight differences (prior weights 0 on first date)
     - `run_backtest(...)`: form portfolios, hold 20 trading days, gross return = weighted sum of per-sector simple 20-day returns from `evaluation.realised_simple_return`; cost = cost_bps * turnover at 5 and 10 bps; net = gross - cost; record gross/turnover/cost/net per strategy, date, cost level; raise `ValueError` naming the date and eligible count when too few sectors
     - Compute the per-sector per-date realised simple return matrix ONCE via `evaluation.py` and REUSE it across all 1,000 random strategies (and all other strategies) rather than recomputing realised returns per strategy
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
 
-  - [ ]* 8.2 Write property test: long-only portfolio weights sum to 1
+  - [x]* 8.2 Write property test: long-only portfolio weights sum to 1
     - **Property 11: Long-only portfolio weights sum to 1**
     - **Validates: Requirements 6.1**
 
-  - [ ]* 8.3 Write property test: long-short portfolio is dollar-neutral with gross exposure 2
+  - [x]* 8.3 Write property test: long-short portfolio is dollar-neutral with gross exposure 2
     - **Property 12: Long-short portfolio is dollar-neutral with gross exposure 2**
     - **Validates: Requirements 6.2**
 
-  - [ ] 8.4 Write property test: turnover equals summed absolute weight changes
+  - [x] 8.4 Write property test: turnover equals summed absolute weight changes
     - **Property 13: Turnover equals summed absolute weight changes**
     - **Validates: Requirements 6.4, 6.5**
 
-  - [ ] 8.5 Write property test: transaction cost is linear in bps and turnover
+  - [x] 8.5 Write property test: transaction cost is linear in bps and turnover
     - **Property 14: Transaction cost is linear in bps and turnover** — 10 bps cost is exactly twice the 5 bps cost
     - **Validates: Requirements 6.6, 6.7**
 
-  - [ ]* 8.6 Write unit test: too-few-sectors ValueError names the date and count
+  - [x]* 8.6 Write unit test: too-few-sectors ValueError names the date and count
     - _Requirements: 6.9_
 
-  - [ ] 8.7 Write property test: signal formation is invariant to future data (future-perturbation)
+  - [x] 8.7 Write property test: signal formation is invariant to future data (future-perturbation)
     - **Property 23: Signal formation is invariant to future data** — for several decision dates, perturb all data strictly after the date (truncate/scramble) and assert TimesFM forecast inputs (log-price context arrays), 20- and 60-day momentum rankings, and the backtest long-only/long-short portfolio weights are identical to unperturbed (TimesFM mocked)
     - **Validates: Requirements 2.2, 2.4, 2.9, 4.1, 5.8**
 
