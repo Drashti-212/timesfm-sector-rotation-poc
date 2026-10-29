@@ -414,6 +414,104 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793262149650
       }
+    ],
+    "10.1 Implement `src/metrics.py`": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262737187
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262973039
+      }
+    ],
+    "10.2 Write property test: net Sharpe formula with zero-variance guard": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262979075
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263497083
+      }
+    ],
+    "10.3 Write property test: max drawdown is a bounded peak-to-trough fraction": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262985163
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263502591
+      }
+    ],
+    "10.4 Write property test: IC bounds, concordance, and t-stat guard": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262990190
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263507793
+      }
+    ],
+    "10.5 Write property test: random percentile is a bounded monotone share": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793262995224
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263514325
+      }
+    ],
+    "10.6 Write property test: interval calibration is a bounded inside-band share": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263000486
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263519416
+      }
+    ],
+    "10.7 Write property test: sub-period halves partition the decision dates": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263005467
+      },
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263524434
+      }
+    ],
+    "10. Evaluation metrics": [
+      {
+        "executionId": "ee295789-1afe-484d-840d-6e6c2a390c97",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793263507876
+      }
+    ],
+    "11.1 Implement `src/scorecard.py`": [
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264491806
+      }
     ]
   }
 }

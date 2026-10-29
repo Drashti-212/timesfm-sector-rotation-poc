@@ -172,8 +172,8 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
 
 > Manual real-data sanity check (not an automated coding task): run the equal-weight, SPY, 20-day momentum, and 60-day momentum baselines through the backtest engine on the real `data/prices_close.csv` and verify that SPY's cumulative return is plausible against its known history; the equal-weight result is close to SPY; the momentum net Sharpe is not implausibly high — a net Sharpe above about 2 indicates look-ahead leakage, so stop and investigate; momentum turnover is non-zero and SPY turnover is zero after the first date; and transaction costs reduce net returns.
 
-- [ ] 10. Evaluation metrics
-  - [ ] 10.1 Implement `src/metrics.py`
+- [x] 10. Evaluation metrics
+  - [x] 10.1 Implement `src/metrics.py`
     - `spearman_ic`/`mean_ic`/`ic_tstat` using realised LOG returns from `evaluation.realised_log_return` (t-stat undefined when n < 2)
     - `net_sharpe` mean/std annualised by `sqrt(252/20)` (undefined when std == 0); `max_drawdown` as a fraction in [0, 1]
     - `net_excess_return` cumulative difference; `random_percentile` share <= candidate on 0-100 scale
@@ -182,32 +182,32 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - `subperiod_splits` first half / second half (middle date to second half when odd) / most recent 24 months; momentum IC via the same method
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10, 7.11, 7.12_
 
-  - [ ] 10.2 Write property test: net Sharpe formula with zero-variance guard
+  - [x] 10.2 Write property test: net Sharpe formula with zero-variance guard
     - **Property 15: Net Sharpe formula with zero-variance guard**
     - **Validates: Requirements 7.3, 7.10**
 
-  - [ ]* 10.3 Write property test: max drawdown is a bounded peak-to-trough fraction
+  - [x]* 10.3 Write property test: max drawdown is a bounded peak-to-trough fraction
     - **Property 16: Max drawdown is a bounded peak-to-trough fraction**
     - **Validates: Requirements 7.4**
 
-  - [ ] 10.4 Write property test: IC bounds, concordance, and t-stat guard
+  - [x] 10.4 Write property test: IC bounds, concordance, and t-stat guard
     - **Property 17: Information coefficient bounds, concordance, and t-stat guard**
     - **Validates: Requirements 7.1, 7.2, 7.11**
 
-  - [ ]* 10.5 Write property test: random percentile is a bounded monotone share
+  - [x]* 10.5 Write property test: random percentile is a bounded monotone share
     - **Property 18: Random percentile is a bounded monotone share**
     - **Validates: Requirements 7.6**
 
-  - [ ]* 10.6 Write property test: interval calibration is a bounded inside-band share
+  - [x]* 10.6 Write property test: interval calibration is a bounded inside-band share
     - **Property 19: Interval calibration is a bounded inside-band share**
     - **Validates: Requirements 7.8**
 
-  - [ ]* 10.7 Write property test: sub-period halves partition the decision dates
+  - [x]* 10.7 Write property test: sub-period halves partition the decision dates
     - **Property 20: Sub-period halves partition the decision dates** — halves cover every date once; second half takes the middle date when odd
     - **Validates: Requirements 7.9**
 
 - [ ] 11. Scorecard
-  - [ ] 11.1 Implement `src/scorecard.py`
+  - [-] 11.1 Implement `src/scorecard.py`
     - `CriterionResult` dataclass and `evaluate_scorecard(metrics)` evaluating all nine criteria against SOW thresholds, using the long-only top-3 equal-weight portfolio as the "top-3 portfolio"
     - Criterion 8 uses `yearly_excess_share` for the single-calendar-year check (no single year contributes more than 50% of the full-period net excess return)
     - A criterion whose required metric is unavailable is recorded as fail with an explanatory note
