@@ -1,6 +1,6 @@
-"""Tests for the look-ahead-safe HistoryAccessor (src/history.py).
+﻿"""Tests for the look-ahead-safe HistoryAccessor (src/history.py).
 
-This module implements Task 3's three test sub-tasks for the
+This module implements Task 3''s three test sub-tasks for the
 ``timesfm-sector-rotation-backtest`` spec:
 
 - Sub-task 3.2 — Property 1: the accessor never returns future data
@@ -65,7 +65,7 @@ def price_tables_and_dates(
 ) -> tuple[pd.DataFrame, str, pd.Timestamp]:
     """Generate a price table, a ticker to read, and a decision date.
 
-    The decision date is drawn to span the whole range of the table's calendar
+    The decision date is drawn to span the whole range of the table''s calendar
     and slightly beyond both ends, so that edge cases (before all data, after all
     data, exactly on a boundary) are exercised.
 
@@ -95,7 +95,7 @@ def price_tables_and_dates(
     table: pd.DataFrame = _price_table(n_rows, prices, nan_mask)
     ticker: str = draw(st.sampled_from(TICKERS))
 
-    # Decision dates spanning before, within, and after the table's calendar.
+    # Decision dates spanning before, within, and after the table''s calendar.
     start: pd.Timestamp = pd.Timestamp("2014-12-20")
     end: pd.Timestamp = table.index[-1] + pd.Timedelta(days=10)
     offset: int = draw(st.integers(min_value=0, max_value=(end - start).days))
@@ -108,7 +108,7 @@ def price_tables_and_dates(
 # Sub-task 3.2 — Property 1: accessor never returns future data
 # ---------------------------------------------------------------------------
 # Feature: timesfm-sector-rotation-backtest, Property 1 History accessor never returns future data
-@settings(max_examples=100)
+@settings(max_examples=100, deadline=None)
 @given(case=price_tables_and_dates())
 def test_accessor_never_returns_future_data(
     case: tuple[pd.DataFrame, str, pd.Timestamp],
@@ -127,13 +127,18 @@ def test_accessor_never_returns_future_data(
     assert (result.index <= decision_date).all()
     # No observation dated strictly after the decision date may be present.
     assert not (result.index > decision_date).any()
+    # Completeness: the accessor must not drop any valid (non-NaN, on-or-before)
+    # observation. Compare against an independently computed expected series.
+    expected: pd.Series = table[ticker].dropna()
+    expected = expected[expected.index <= decision_date]
+    pd.testing.assert_series_equal(result, expected, check_freq=False)
 
 
 # ---------------------------------------------------------------------------
 # Sub-task 3.3 — Property 2: returned history is ascending and NaN-free
 # ---------------------------------------------------------------------------
 # Feature: timesfm-sector-rotation-backtest, Property 2 Returned history is ascending and NaN-free
-@settings(max_examples=100)
+@settings(max_examples=100, deadline=None)
 @given(case=price_tables_and_dates())
 def test_returned_history_is_ascending_and_nan_free(
     case: tuple[pd.DataFrame, str, pd.Timestamp],
@@ -192,6 +197,9 @@ def test_date_bound_over_range_of_decision_dates() -> None:
         result: pd.Series = accessor.get_history("XLK", decision_date)
         assert not result.empty, "XLK has data on and before every table date"
         assert result.index.max() <= decision_date
+        # Boundary-inclusive: the decision date itself must be present (catches `<`).
+        assert result.index.max() == decision_date
+        assert result.iloc[-1] == table.loc[decision_date, "XLK"]
 
 
 def test_missing_ticker_raises_keyerror_naming_ticker() -> None:

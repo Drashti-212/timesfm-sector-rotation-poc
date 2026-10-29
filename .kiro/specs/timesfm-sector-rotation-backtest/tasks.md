@@ -4,7 +4,7 @@
 
 This plan builds the backtesting pipeline in strict dependency order, driven by the three design priorities: look-ahead safety, reproducibility, and faithful implementation of the SOW. The TimesFM 2.5 smoke-test script is the first deliverable (it verifies the model API and Colab environment before any pipeline code). The single `get_history` accessor and its mandated look-ahead tests come early, because every price read in the pipeline flows through it. Each subsequent module is implemented together with its property-based tests (Hypothesis, with TimesFM mocked), then everything is wired behind one `argparse` CLI and documented in the README.
 
-All code and tests are authored here but executed only in Google Colab; no task runs or installs packages locally. `requirements.txt` is finalised by `pip freeze` in Colab after the smoke test passes.
+Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, with Google Colab as a fallback. Tests may be run locally with that interpreter. `requirements.txt` is finalised by `pip freeze` in Colab after the smoke test passes.
 
 ## Tasks
 
@@ -65,7 +65,7 @@ All code and tests are authored here but executed only in Google Colab; no task 
     - **Property 9: Insufficient-history sectors are excluded from rankings** — sectors with fewer than the required observations (252 eligibility, or the momentum lookback) are absent
     - **Validates: Requirements 3.5, 5.6**
 
-  - [ ]* 4.4 Write unit test: decision-date count on the real CSV is 80-100
+  - [ ] 4.4 Write unit test: decision-date count on the real CSV is 80-100
     - _Requirements: 3.6_
 
 - [ ] 5. Forecaster and atomic per-date forecast cache
@@ -128,15 +128,11 @@ All code and tests are authored here but executed only in Google Colab; no task 
     - This is the only component permitted to read forward prices; it runs after all signals are formed and is imported only by backtest and metrics
     - _Requirements: 2.4, 6.1, 7.8_
 
-  - [ ] 7.2 Write property test: signal formation is invariant to future data (future-perturbation)
-    - **Property 23: Signal formation is invariant to future data** — for several decision dates, perturb all data strictly after the date (truncate/scramble) and assert TimesFM forecast inputs (log-price context arrays), 20- and 60-day momentum rankings, and long-only/long-short weights are identical to unperturbed (TimesFM mocked)
-    - **Validates: Requirements 2.2, 2.4, 2.9, 4.1, 5.8**
-
-  - [ ]* 7.3 Write unit test: realised simple return equals exp(log) - 1
+  - [ ]* 7.2 Write unit test: realised simple return equals exp(log) - 1
     - For sampled tickers/dates, confirm the two realised-return views are consistent
     - _Requirements: 6.1, 7.8_
 
-  - [ ] 7.4 Write import-boundary unit test enforcing the evaluation read path
+  - [ ] 7.3 Write import-boundary unit test enforcing the evaluation read path
     - Parse the `src/` directory with Python's `ast` module and FAIL if `forecast.py` or `baselines.py` imports `evaluation` (directly as `import evaluation` or via `from evaluation import ...`); only `backtest.py` and `metrics.py` are permitted to import `evaluation`
     - _Requirements: 2.4_
 
@@ -167,8 +163,14 @@ All code and tests are authored here but executed only in Google Colab; no task 
   - [ ]* 8.6 Write unit test: too-few-sectors ValueError names the date and count
     - _Requirements: 6.9_
 
+  - [ ] 8.7 Write property test: signal formation is invariant to future data (future-perturbation)
+    - **Property 23: Signal formation is invariant to future data** — for several decision dates, perturb all data strictly after the date (truncate/scramble) and assert TimesFM forecast inputs (log-price context arrays), 20- and 60-day momentum rankings, and the backtest long-only/long-short portfolio weights are identical to unperturbed (TimesFM mocked)
+    - **Validates: Requirements 2.2, 2.4, 2.9, 4.1, 5.8**
+
 - [ ] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
+
+> Manual real-data sanity check (not an automated coding task): run the equal-weight, SPY, 20-day momentum, and 60-day momentum baselines through the backtest engine on the real `data/prices_close.csv` and verify that SPY's cumulative return is plausible against its known history; the equal-weight result is close to SPY; the momentum net Sharpe is not implausibly high — a net Sharpe above about 2 indicates look-ahead leakage, so stop and investigate; momentum turnover is non-zero and SPY turnover is zero after the first date; and transaction costs reduce net returns.
 
 - [ ] 10. Evaluation metrics
   - [ ] 10.1 Implement `src/metrics.py`
@@ -250,7 +252,7 @@ All code and tests are authored here but executed only in Google Colab; no task 
 - [ ] 15. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-> Colab verification (manual step, not a coding task): in Google Colab, install TimesFM per the official repo README, run `src/timesfm_smoke.py` and confirm it exits 0, then run `pip freeze > requirements.txt` to produce the exact pins, then run one end-to-end `python run_pipeline.py` pointing `--cache-path` at a mounted Google Drive location to generate the scorecard, report, charts, and results tables.
+> Colab verification (manual step, not a coding task): in Google Colab, install TimesFM per the official repo README, run `src/timesfm_smoke.py` and confirm it exits 0, then run `pip freeze > requirements.txt` to produce the exact pins, then run one end-to-end `python run_pipeline.py` pointing `--cache-path` at a mounted Google Drive location to generate the scorecard, report, charts, and results tables. On the real `data/prices_close.csv` the pipeline should produce 92 decision dates (first 2019-07-01, last 2026-09-28) and 1,012 forecasts (92 dates x 11 sectors, since all 11 sectors are eligible from the first decision date). The end-to-end run and the pip freeze for requirements.txt must be done in the SAME environment (the local miniforge env or Colab), so the pinned versions match the environment that produced the results.
 
 ## Notes
 
@@ -258,7 +260,7 @@ All code and tests are authored here but executed only in Google Colab; no task 
 - Each task references specific requirements for traceability, and every property-based test task names the design property it implements.
 - Testing has no stand-alone tasks: tests are sub-tasks under the module they cover, placed close to the implementation to catch errors early.
 - Property-based tests use Hypothesis at >= 100 iterations with TimesFM mocked; the real model is exercised only by the smoke test and the one Colab end-to-end run.
-- Checkpoints ensure incremental validation. Python runs only in Google Colab; no task installs packages or runs tests locally.
+- Checkpoints ensure incremental validation. Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe; tests may be run locally with it; Google Colab is a fallback. No task installs packages; if one is missing, tell the user.
 
 ## Task Dependency Graph
 
@@ -271,9 +273,9 @@ All code and tests are authored here but executed only in Google Colab; no task 
     { "id": 3, "tasks": ["4.2", "4.3", "4.4", "5.1", "6.1"] },
     { "id": 4, "tasks": ["5.2", "6.2", "6.3", "6.4"] },
     { "id": 5, "tasks": ["5.3", "5.4", "5.5", "5.6", "5.7", "7.1"] },
-    { "id": 6, "tasks": ["7.2", "7.3", "7.4"] },
+    { "id": 6, "tasks": ["7.2", "7.3"] },
     { "id": 7, "tasks": ["8.1"] },
-    { "id": 8, "tasks": ["8.2", "8.3", "8.4", "8.5", "8.6", "10.1"] },
+    { "id": 8, "tasks": ["8.2", "8.3", "8.4", "8.5", "8.6", "8.7", "10.1"] },
     { "id": 9, "tasks": ["10.2", "10.3", "10.4", "10.5", "10.6", "10.7", "11.1"] },
     { "id": 10, "tasks": ["11.2", "11.3", "12.1"] },
     { "id": 11, "tasks": ["12.2", "13"] },
