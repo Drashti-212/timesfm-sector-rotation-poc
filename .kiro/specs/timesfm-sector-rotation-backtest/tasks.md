@@ -68,7 +68,7 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
   - [x] 4.4 Write unit test: decision-date count on the real CSV is 80-100
     - _Requirements: 3.6_
 
-- [ ] 5. Forecaster and atomic per-date forecast cache
+- [x] 5. Forecaster and atomic per-date forecast cache
   - [x] 5.1 Implement `ForecastRecord` and `ForecastCache` in `src/forecast.py`
     - `ForecastRecord` dataclass: ticker, decision_date, context_points, point_log, p10_log, p90_log (20 values each), last_log_price
     - `ForecastCache(cache_path)` parquet-backed, run-time-configurable path (may be a Google Drive path); `get`, `all_records`
@@ -83,7 +83,7 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - `expected_return`/`p10_return`/`p90_return` = step-20 log forecast minus `last_log_price`
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.13, 11.8_
 
-  - [ ]* 5.3 Write property test: forecaster reads prices only through the accessor
+  - [x]* 5.3 Write property test: forecaster reads prices only through the accessor
     - **Property 3: Forecaster reads prices only through the accessor** — using a spy/double accessor that records calls, assert no other price read occurs
     - **Validates: Requirements 2.4, 2.9, 4.1**
 
@@ -91,15 +91,15 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - Assert the Forecaster obtains input series exclusively through `get_history` (spy accessor), model mocked
     - _Requirements: 2.9_
 
-  - [ ]* 5.5 Write property test: forecast-return derivation is consistent and order-preserving
+  - [x]* 5.5 Write property test: forecast-return derivation is consistent and order-preserving
     - **Property 5: Forecast-return derivation is consistent and order-preserving**
     - **Validates: Requirements 4.7, 4.8**
 
-  - [ ] 5.6 Write property test: forecast cache is idempotent and resumable at decision-date granularity
+  - [x] 5.6 Write property test: forecast cache is idempotent and resumable at decision-date granularity
     - **Property 6: Forecast cache is idempotent and resumable at decision-date granularity** — a second run recomputes nothing for fully cached dates, leaves records unchanged, and commits are atomic (date fully present or absent)
     - **Validates: Requirements 4.11, 4.12, 4.13, 11.8**
 
-  - [ ]* 5.7 Write unit test: atomic cache write leaves no partial record under simulated interruption
+  - [x]* 5.7 Write unit test: atomic cache write leaves no partial record under simulated interruption
     - _Requirements: 4.12_
 
 - [ ] 6. Baseline rankings and portfolios

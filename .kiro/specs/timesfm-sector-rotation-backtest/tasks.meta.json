@@ -170,6 +170,61 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793255159650
       }
+    ],
+    "5.3 Write property test: forecaster reads prices only through the accessor": [
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256216761
+      },
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256882231
+      }
+    ],
+    "5.5 Write property test: forecast-return derivation is consistent and order-preserving": [
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256221640
+      },
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256887347
+      }
+    ],
+    "5.6 Write property test: forecast cache is idempotent and resumable at decision-date granularity": [
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256226678
+      },
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256892865
+      }
+    ],
+    "5.7 Write unit test: atomic cache write leaves no partial record under simulated interruption": [
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256231707
+      },
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256899375
+      }
+    ],
+    "5. Forecaster and atomic per-date forecast cache": [
+      {
+        "executionId": "11fc8d1d-3c16-4650-916a-362f06f24b92",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793256893081
+      }
     ]
   }
 }

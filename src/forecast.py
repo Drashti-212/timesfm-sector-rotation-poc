@@ -26,6 +26,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pandas as pd
 
+from src.data import BENCHMARK
 from src.rebalance import eligible_tickers
 
 if TYPE_CHECKING:  # pragma: no cover - import only for type checking
@@ -332,9 +333,18 @@ class Forecaster:
 
         for ticker in tickers:
             history: pd.Series = self._accessor.get_history(ticker, as_of)
-            log_prices: np.ndarray = np.log(
-                history.to_numpy(dtype=float)
-            )
+            prices: np.ndarray = history.to_numpy(dtype=float)
+            if (
+                prices.size == 0
+                or not np.all(np.isfinite(prices))
+                or np.any(prices <= 0.0)
+            ):
+                raise ValueError(
+                    f"History for ticker {ticker!r} at decision date "
+                    f"{as_of.date()} is empty or contains non-positive or "
+                    f"non-finite prices; cannot forecast."
+                )
+            log_prices: np.ndarray = np.log(prices)
             if log_prices.shape[0] > self._context:
                 log_prices = log_prices[-self._context :]
 
@@ -390,6 +400,10 @@ class Forecaster:
             decision_dates: The decision dates in generation order.
             universe: The SECTOR tickers forming the ranking universe (no SPY).
         """
+        assert BENCHMARK not in universe, (
+            f"Benchmark {BENCHMARK!r} must not be in the forecast universe; "
+            f"only sector tickers are forecast."
+        )
         for decision_date in decision_dates:
             eligible: list[str] = eligible_tickers(
                 self._accessor, universe, decision_date
