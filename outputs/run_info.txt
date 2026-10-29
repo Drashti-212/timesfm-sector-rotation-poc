@@ -1,0 +1,5 @@
+checkpoint: google/timesfm-2.5-200m-pytorch
+timesfm_version: 3.0.2
+seed: 0
+decision_dates: 92
+forecasts: 1012
