@@ -102,22 +102,22 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
   - [x]* 5.7 Write unit test: atomic cache write leaves no partial record under simulated interruption
     - _Requirements: 4.12_
 
-- [ ] 6. Baseline rankings and portfolios
-  - [ ] 6.1 Implement `src/baselines.py`
+- [x] 6. Baseline rankings and portfolios
+  - [x] 6.1 Implement `src/baselines.py`
     - `equal_weight(eligible)` equal weight, sums to 1; `spy_buy_and_hold()` holds only SPY
     - `momentum_ranking(accessor, eligible, decision_date, lookback, universe)` descending trailing return, ties broken by universe ticker order, insufficient-history sectors excluded; `momentum_top3` takes top 3 — reads only via `get_history` with date <= decision_date
     - `random_rankings(eligible_by_date, n_strategies=1000, seed=0)` draws a fresh random ordering per date, fixed seed, exactly 1,000 strategies
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9_
 
-  - [ ]* 6.2 Write property test: equal-weight baseline forms a valid simplex
+  - [x]* 6.2 Write property test: equal-weight baseline forms a valid simplex
     - **Property 7: Equal-weight baseline forms a valid simplex**
     - **Validates: Requirements 5.1**
 
-  - [ ]* 6.3 Write property test: momentum ranking is descending with deterministic tie-breaking
+  - [x]* 6.3 Write property test: momentum ranking is descending with deterministic tie-breaking
     - **Property 8: Momentum ranking is descending with deterministic tie-breaking**
     - **Validates: Requirements 5.3, 5.4, 5.5, 5.8**
 
-  - [ ]* 6.4 Write property test: random baseline is reproducible under a fixed seed
+  - [x]* 6.4 Write property test: random baseline is reproducible under a fixed seed
     - **Property 10: Random baseline is reproducible under a fixed seed** — identical orderings per date across runs; exactly 1,000 strategies
     - **Validates: Requirements 5.7, 5.9, 11.4**
 

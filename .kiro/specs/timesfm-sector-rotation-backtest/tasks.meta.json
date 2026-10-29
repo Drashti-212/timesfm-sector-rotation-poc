@@ -225,6 +225,61 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793256893081
       }
+    ],
+    "6.1 Implement `src/baselines.py`": [
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258086674
+      },
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258191583
+      }
+    ],
+    "6. Baseline rankings and portfolios": [
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258191654
+      }
+    ],
+    "6.2 Write property test: equal-weight baseline forms a valid simplex": [
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258197898
+      },
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258396993
+      }
+    ],
+    "6.3 Write property test: momentum ranking is descending with deterministic tie-breaking": [
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258202822
+      },
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258402378
+      }
+    ],
+    "6.4 Write property test: random baseline is reproducible under a fixed seed": [
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258208002
+      },
+      {
+        "executionId": "0edc4b9a-a81c-4758-bec6-32aa7b49c8ab",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793258407245
+      }
     ]
   }
 }
