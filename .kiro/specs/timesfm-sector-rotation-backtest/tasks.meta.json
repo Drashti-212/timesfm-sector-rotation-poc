@@ -79,6 +79,61 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793185145202
       }
+    ],
+    "4.1 Implement `src/rebalance.py`": [
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793253832581
+      },
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793253967758
+      }
+    ],
+    "4.2 Write property test: rebalance dates are non-overlapping with sufficient look-ahead": [
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793253972916
+      },
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254155447
+      }
+    ],
+    "4.3 Write property test: insufficient-history sectors are excluded": [
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793253977241
+      },
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254160334
+      }
+    ],
+    "4.4 Write unit test: decision-date count on the real CSV is 80-100": [
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793253982260
+      },
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254165243
+      }
+    ],
+    "4. Rebalance-date generation and eligibility": [
+      {
+        "executionId": "ec9ee94a-1c2d-4f3d-a2c3-5b90f1f6f32e",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793254165344
+      }
     ]
   }
 }

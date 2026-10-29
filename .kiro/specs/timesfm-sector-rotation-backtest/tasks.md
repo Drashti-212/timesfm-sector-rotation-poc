@@ -50,22 +50,22 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - Missing-ticker `KeyError` names the ticker (Req 2.7); empty-history return when nothing qualifies (Req 2.8)
     - _Requirements: 2.5, 2.7, 2.8_
 
-- [ ] 4. Rebalance-date generation and eligibility
-  - [ ] 4.1 Implement `src/rebalance.py`
+- [x] 4. Rebalance-date generation and eligibility
+  - [x] 4.1 Implement `src/rebalance.py`
     - `trading_calendar(prices)` returns ordered distinct trading dates
     - `generate_rebalance_dates(calendar, start_date=2019-07-01, horizon=20)` starts on the first date on/after start_date, steps 20 positions, keeps only dates with >= 20 trading dates strictly after them
     - `eligible_tickers(accessor, universe, decision_date, min_history=252)` keeps tickers with >= 252 non-missing observations on/before the date
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 4.2 Write property test: rebalance dates are non-overlapping with sufficient look-ahead
+  - [x] 4.2 Write property test: rebalance dates are non-overlapping with sufficient look-ahead
     - **Property 4: Rebalance dates are non-overlapping with sufficient look-ahead** — consecutive dates exactly 20 positions apart; every date has >= 20 trading dates after it
     - **Validates: Requirements 3.3, 3.4**
 
-  - [ ]* 4.3 Write property test: insufficient-history sectors are excluded
+  - [x]* 4.3 Write property test: insufficient-history sectors are excluded
     - **Property 9: Insufficient-history sectors are excluded from rankings** — sectors with fewer than the required observations (252 eligibility, or the momentum lookback) are absent
     - **Validates: Requirements 3.5, 5.6**
 
-  - [ ] 4.4 Write unit test: decision-date count on the real CSV is 80-100
+  - [x] 4.4 Write unit test: decision-date count on the real CSV is 80-100
     - _Requirements: 3.6_
 
 - [ ] 5. Forecaster and atomic per-date forecast cache
