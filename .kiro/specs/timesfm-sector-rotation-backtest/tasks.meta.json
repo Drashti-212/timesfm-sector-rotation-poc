@@ -511,6 +511,66 @@
         "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793264491806
+      },
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264764147
+      }
+    ],
+    "11.2 Write property test: scorecard pass/fail matches each threshold predicate": [
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264770757
+      },
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264991948
+      }
+    ],
+    "11.3 Write unit test: unavailable-metric criterion is failed with a note": [
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264777235
+      },
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264998781
+      }
+    ],
+    "11. Scorecard": [
+      {
+        "executionId": "e9eb71c9-75cb-4d3e-9487-f7fdf3a93899",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793264992042
+      }
+    ],
+    "12.1 Implement `src/report.py`": [
+      {
+        "executionId": "55f84fa4-7945-4bb1-bde9-c0548696281c",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793265528674
+      },
+      {
+        "executionId": "55f84fa4-7945-4bb1-bde9-c0548696281c",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793265807537
+      }
+    ],
+    "12.2 Write property test: decision rule yields exactly one recommendation": [
+      {
+        "executionId": "55f84fa4-7945-4bb1-bde9-c0548696281c",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793265813149
+      },
+      {
+        "executionId": "55f84fa4-7945-4bb1-bde9-c0548696281c",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793266658860
       }
     ]
   }

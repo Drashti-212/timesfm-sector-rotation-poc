@@ -37,6 +37,7 @@ Colab-compatible: pure pandas / numpy; no local-only paths or I/O.
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Sequence
 
 import numpy as np
@@ -886,3 +887,257 @@ def yearly_excess_shares_vs_benchmarks(
         "vs_equal_weight": yearly_excess_share(timesfm_net, equal_net),
         "vs_spy": yearly_excess_share(timesfm_net, spy_net),
     }
+
+
+# --- Metrics bundle ----------------------------------------------------------
+
+@dataclass(frozen=True)
+class MetricsBundle:
+    """Immutable container of every scalar/split metric the Scorecard consumes.
+
+    Every ``float`` field MAY be ``NaN``: a metric is NaN whenever its underlying
+    computation was undefined (too few points, zero variance, no qualifying pairs,
+    an absent strategy name, or an empty null distribution). The Scorecard treats
+    any NaN a criterion needs as "unavailable" and fails that criterion with a
+    note. The momentum IC means (:attr:`mean_ic_mom20`, :attr:`mean_ic_mom60`) are
+    NaN unless the corresponding momentum IC series are supplied to
+    :func:`build_metrics_bundle`.
+
+    The TimesFM ``*_timesfm`` / ``excess_vs_*`` fields all refer to the long-only
+    top-3 equal-weight portfolio (strategy name ``timesfm_long_only``), the single
+    "top-3 portfolio" used everywhere in scoring (Requirement 7.12).
+
+    Attributes:
+        mean_ic: TimesFM mean per-date Spearman IC.
+        ic_tstat: One-sided t-statistic of the TimesFM per-date ICs.
+        mean_ic_mom20: Mean IC of the 20-day momentum baseline (NaN if not supplied).
+        mean_ic_mom60: Mean IC of the 60-day momentum baseline (NaN if not supplied).
+        sharpe_timesfm: Net Sharpe of ``timesfm_long_only`` at 5 bps.
+        sharpe_equal_weight: Net Sharpe of ``equal_weight`` at 5 bps.
+        sharpe_spy: Net Sharpe of ``spy`` at 5 bps.
+        sharpe_mom20: Net Sharpe of ``mom20`` at 5 bps.
+        sharpe_mom60: Net Sharpe of ``mom60`` at 5 bps.
+        random_percentile: Percentile (0-100) of the TimesFM 5 bps net Sharpe
+            within the random-null net Sharpes at 5 bps.
+        max_dd_timesfm: Max drawdown of ``timesfm_long_only`` 5 bps net returns.
+        max_dd_equal_weight: Max drawdown of ``equal_weight`` 5 bps net returns.
+        excess_vs_ew_5: TimesFM net excess vs ``equal_weight`` at 5 bps.
+        excess_vs_spy_5: TimesFM net excess vs ``spy`` at 5 bps.
+        excess_vs_ew_10: TimesFM net excess vs ``equal_weight`` at 10 bps.
+        excess_vs_spy_10: TimesFM net excess vs ``spy`` at 10 bps.
+        calibration: Share of realised returns inside the p10-p90 band.
+        first_half: Sub-period dict with keys ``"mean_ic"``,
+            ``"excess_vs_equal_weight"``, ``"excess_vs_spy"``.
+        second_half: Same keys as :attr:`first_half`.
+        last_24_months: Same keys as :attr:`first_half`.
+        yearly_share_vs_ew: Max single-calendar-year share of TimesFM net excess
+            vs ``equal_weight`` at 5 bps.
+        yearly_share_vs_spy: Max single-calendar-year share of TimesFM net excess
+            vs ``spy`` at 5 bps.
+        delivery_complete: Whether the pipeline delivered end to end; ``None`` when
+            delivery status is unknown (treated by the Scorecard as unavailable).
+    """
+
+    mean_ic: float
+    ic_tstat: float
+    mean_ic_mom20: float
+    mean_ic_mom60: float
+    sharpe_timesfm: float
+    sharpe_equal_weight: float
+    sharpe_spy: float
+    sharpe_mom20: float
+    sharpe_mom60: float
+    random_percentile: float
+    max_dd_timesfm: float
+    max_dd_equal_weight: float
+    excess_vs_ew_5: float
+    excess_vs_spy_5: float
+    excess_vs_ew_10: float
+    excess_vs_spy_10: float
+    calibration: float
+    first_half: dict
+    second_half: dict
+    last_24_months: dict
+    yearly_share_vs_ew: float
+    yearly_share_vs_spy: float
+    delivery_complete: bool | None
+
+
+# Strategy names for the momentum baselines, looked up in the results table.
+MOM20: str = "mom20"
+"""Strategy name for the 20-trading-day momentum baseline."""
+
+MOM60: str = "mom60"
+"""Strategy name for the 60-trading-day momentum baseline."""
+
+
+def build_metrics_bundle(
+    results: pd.DataFrame,
+    ic: pd.Series,
+    records: dict[tuple[str, pd.Timestamp], "ForecastRecord"],
+    realised_log_matrix: pd.DataFrame,
+    decision_dates: list[pd.Timestamp],
+    delivery_complete: bool | None = None,
+    ic_mom20: pd.Series | None = None,
+    ic_mom60: pd.Series | None = None,
+) -> MetricsBundle:
+    """Assemble a :class:`MetricsBundle` from the existing metric functions.
+
+    This builder is PURE: it only composes the module's own metric helpers over
+    precomputed inputs and never reads prices. Every float it stores MAY be NaN
+    whenever the underlying metric is undefined (a missing strategy name, too few
+    points, zero variance, no qualifying pairs, or an empty null distribution);
+    callers propagate those NaNs to the Scorecard as "unavailable".
+
+    Momentum IC means are NaN UNLESS the caller supplies the momentum IC series:
+    the builder does not recompute momentum IC itself. When ``ic_mom20`` /
+    ``ic_mom60`` are provided it sets the corresponding mean via :func:`mean_ic`;
+    otherwise the field stays NaN. This keeps the builder pure while letting the
+    pipeline pass the momentum IC series it already computes.
+
+    Net Sharpes, the random percentile, max drawdowns, the 5 bps excess returns,
+    and the sub-period / yearly splits are all taken at 5 bps; the 10 bps excess
+    returns are taken at 10 bps (Requirement 7.7). All TimesFM figures use the
+    ``timesfm_long_only`` strategy (the scoring "top-3 portfolio", Requirement 7.12).
+
+    Args:
+        results: The long-format backtest results DataFrame (columns include
+            ``strategy, decision_date, cost_bps, net_return``).
+        ic: The TimesFM per-date IC series from :func:`ic_series`.
+        records: Mapping from ``(ticker, decision_date)`` to its forecast record,
+            for interval calibration.
+        realised_log_matrix: Realised LOG returns, rows = decision date, columns =
+            ticker, for interval calibration.
+        decision_dates: The ordered decision dates defining the sub-period splits.
+        delivery_complete: Pipeline delivery status, passed through unchanged
+            (``None`` when unknown).
+        ic_mom20: Optional 20-day momentum per-date IC series; its mean populates
+            :attr:`MetricsBundle.mean_ic_mom20` when provided (else NaN).
+        ic_mom60: Optional 60-day momentum per-date IC series; its mean populates
+            :attr:`MetricsBundle.mean_ic_mom60` when provided (else NaN).
+
+    Returns:
+        A fully populated :class:`MetricsBundle`; any undefined metric is NaN.
+    """
+    nan: float = float("nan")
+
+    # --- Net Sharpes at 5 bps, looked up by strategy name (NaN when absent). --
+    sharpes_5: dict[str, float] = net_sharpes_from_results(results, cost_bps=5)
+    sharpe_timesfm: float = sharpes_5.get(TIMESFM_LONG_ONLY, nan)
+    sharpe_equal_weight: float = sharpes_5.get(EQUAL_WEIGHT, nan)
+    sharpe_spy: float = sharpes_5.get(SPY, nan)
+    sharpe_mom20: float = sharpes_5.get(MOM20, nan)
+    sharpe_mom60: float = sharpes_5.get(MOM60, nan)
+
+    # --- Random-null percentile of the TimesFM 5 bps net Sharpe. --------------
+    randoms_5: list[float] = random_sharpes_from_results(results, cost_bps=5)
+    percentile: float = random_percentile(sharpe_timesfm, randoms_5)
+
+    # --- TimesFM / momentum mean ICs. -----------------------------------------
+    timesfm_mean_ic: float = mean_ic(ic)
+    timesfm_ic_tstat: float = ic_tstat(ic)
+    mean_ic_mom20: float = mean_ic(ic_mom20) if ic_mom20 is not None else nan
+    mean_ic_mom60: float = mean_ic(ic_mom60) if ic_mom60 is not None else nan
+
+    # --- Per-strategy 5 / 10 bps net-return series, ordered by decision date. -
+    by_strategy_5: dict[str, pd.Series] = _net_returns_by_strategy(results, 5)
+    by_strategy_10: dict[str, pd.Series] = _net_returns_by_strategy(results, 10)
+
+    empty: pd.Series = pd.Series(dtype=float)
+    timesfm_5: pd.Series = by_strategy_5.get(TIMESFM_LONG_ONLY, empty)
+    equal_5: pd.Series = by_strategy_5.get(EQUAL_WEIGHT, empty)
+    spy_5: pd.Series = by_strategy_5.get(SPY, empty)
+    timesfm_10: pd.Series = by_strategy_10.get(TIMESFM_LONG_ONLY, empty)
+    equal_10: pd.Series = by_strategy_10.get(EQUAL_WEIGHT, empty)
+    spy_10: pd.Series = by_strategy_10.get(SPY, empty)
+
+    # --- Max drawdowns from the 5 bps net-return series. ----------------------
+    # An empty strategy series (e.g. the strategy is absent from the results)
+    # has no meaningful drawdown; report NaN rather than max_drawdown's 0.0 so
+    # the Scorecard records the criterion as unavailable instead of scoring it.
+    def _safe_max_dd(series: pd.Series) -> float:
+        """Return the max drawdown of a net-return series, or NaN if empty."""
+        if series.empty:
+            return nan
+        return max_drawdown(series.to_numpy(dtype=float))
+
+    def _safe_excess(strategy: pd.Series, benchmark: pd.Series) -> float:
+        """Return the net excess return, or NaN if either series is empty or
+
+        the strategy and benchmark do not share the same decision-date index.
+        When both are non-empty and their indices match exactly (same labels,
+        same order), they are aligned on that shared index before differencing;
+        any index mismatch yields NaN so a misaligned comparison is never
+        silently scored."""
+        if strategy.empty or benchmark.empty:
+            return nan
+        if len(strategy) != len(benchmark) or not strategy.index.equals(
+            benchmark.index
+        ):
+            return nan
+        return net_excess_return(
+            strategy.to_numpy(dtype=float), benchmark.to_numpy(dtype=float)
+        )
+
+    max_dd_timesfm: float = _safe_max_dd(timesfm_5)
+    max_dd_equal_weight: float = _safe_max_dd(equal_5)
+
+    # --- Net excess returns at 5 and 10 bps vs each benchmark. ----------------
+    excess_vs_ew_5: float = _safe_excess(timesfm_5, equal_5)
+    excess_vs_spy_5: float = _safe_excess(timesfm_5, spy_5)
+    excess_vs_ew_10: float = _safe_excess(timesfm_10, equal_10)
+    excess_vs_spy_10: float = _safe_excess(timesfm_10, spy_10)
+
+    # --- Interval calibration. ------------------------------------------------
+    calibration: float = interval_calibration(records, realised_log_matrix)
+
+    # --- Sub-period splits (copy only the three scored keys per sub-period). --
+    splits: dict[str, dict] = subperiod_splits(
+        decision_dates, ic, results, cost_bps=5
+    )
+
+    def _split_dict(name: str) -> dict:
+        """Return a plain dict of the three scored keys for one sub-period."""
+        source: dict = splits.get(name, {})
+        return {
+            "mean_ic": source.get("mean_ic", nan),
+            "excess_vs_equal_weight": source.get("excess_vs_equal_weight", nan),
+            "excess_vs_spy": source.get("excess_vs_spy", nan),
+        }
+
+    first_half: dict = _split_dict("first_half")
+    second_half: dict = _split_dict("second_half")
+    last_24_months: dict = _split_dict("last_24_months")
+
+    # --- Yearly net-excess shares vs each benchmark at 5 bps. -----------------
+    yearly: dict[str, float] = yearly_excess_shares_vs_benchmarks(
+        results, cost_bps=5
+    )
+    yearly_share_vs_ew: float = yearly.get("vs_equal_weight", nan)
+    yearly_share_vs_spy: float = yearly.get("vs_spy", nan)
+
+    return MetricsBundle(
+        mean_ic=timesfm_mean_ic,
+        ic_tstat=timesfm_ic_tstat,
+        mean_ic_mom20=mean_ic_mom20,
+        mean_ic_mom60=mean_ic_mom60,
+        sharpe_timesfm=sharpe_timesfm,
+        sharpe_equal_weight=sharpe_equal_weight,
+        sharpe_spy=sharpe_spy,
+        sharpe_mom20=sharpe_mom20,
+        sharpe_mom60=sharpe_mom60,
+        random_percentile=percentile,
+        max_dd_timesfm=max_dd_timesfm,
+        max_dd_equal_weight=max_dd_equal_weight,
+        excess_vs_ew_5=excess_vs_ew_5,
+        excess_vs_spy_5=excess_vs_spy_5,
+        excess_vs_ew_10=excess_vs_ew_10,
+        excess_vs_spy_10=excess_vs_spy_10,
+        calibration=calibration,
+        first_half=first_half,
+        second_half=second_half,
+        last_24_months=last_24_months,
+        yearly_share_vs_ew=yearly_share_vs_ew,
+        yearly_share_vs_spy=yearly_share_vs_spy,
+        delivery_complete=delivery_complete,
+    )

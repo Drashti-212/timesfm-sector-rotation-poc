@@ -206,27 +206,27 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - **Property 20: Sub-period halves partition the decision dates** — halves cover every date once; second half takes the middle date when odd
     - **Validates: Requirements 7.9**
 
-- [ ] 11. Scorecard
-  - [-] 11.1 Implement `src/scorecard.py`
+- [x] 11. Scorecard
+  - [x] 11.1 Implement `src/scorecard.py`
     - `CriterionResult` dataclass and `evaluate_scorecard(metrics)` evaluating all nine criteria against SOW thresholds, using the long-only top-3 equal-weight portfolio as the "top-3 portfolio"
     - Criterion 8 uses `yearly_excess_share` for the single-calendar-year check (no single year contributes more than 50% of the full-period net excess return)
     - A criterion whose required metric is unavailable is recorded as fail with an explanatory note
     - _Requirements: 7.12, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.10, 8.11, 8.12_
 
-  - [ ] 11.2 Write property test: scorecard pass/fail matches each threshold predicate
+  - [x] 11.2 Write property test: scorecard pass/fail matches each threshold predicate
     - **Property 21: Scorecard pass/fail matches each threshold predicate** — generators cover exact threshold values (IC = 0.05, t-stat = 1.65, 90th percentile), `yearly_excess_share` at the single-year 50% boundary, and the unavailable-metric fail case
     - **Validates: Requirements 7.12, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.11, 8.12**
 
-  - [ ]* 11.3 Write unit test: unavailable-metric criterion is failed with a note
+  - [x]* 11.3 Write unit test: unavailable-metric criterion is failed with a note
     - _Requirements: 8.11_
 
 - [ ] 12. Reporter and decision rule
-  - [ ] 12.1 Implement `src/report.py`
+  - [x] 12.1 Implement `src/report.py`
     - `recommend(scorecard, metrics)` applies the sequential rule (Go; else No-Go; else Conditional) and returns exactly one recommendation plus a rationale naming each contributing criterion by number and result
     - `build_report(...)` writes the report (scorecard table, recommendation, data-leakage and small-sample caveats), charts (equity curve, IC-over-time, interval calibration, last-24-months view), and saves per-strategy metrics and scorecard tables to files
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 11.10_
 
-  - [ ] 12.2 Write property test: decision rule yields exactly one recommendation
+  - [x] 12.2 Write property test: decision rule yields exactly one recommendation
     - **Property 22: Decision rule yields exactly one recommendation** — generators cover the "exactly one of criteria 5-8 fails" boundary
     - **Validates: Requirements 9.1, 9.2, 9.3, 9.4**
 

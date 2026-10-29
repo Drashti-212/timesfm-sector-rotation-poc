@@ -38,7 +38,9 @@ from hypothesis import strategies as st
 
 from src.forecast import ForecastRecord, expected_return, p10_return, p90_return
 from src.metrics import (
+    MetricsBundle,
     _is_constant,
+    build_metrics_bundle,
     ic_dropped_count,
     ic_series,
     ic_tstat,
@@ -55,6 +57,7 @@ from src.metrics import (
     timesfm_ic_signal,
     yearly_excess_share,
 )
+from src.scorecard import evaluate_scorecard
 
 # The step-20 forecast lives at index 19 of each 20-length log-price path.
 STEP_20_INDEX: int = 19
@@ -904,3 +907,146 @@ def test_random_percentile_nan_candidate_is_nan() -> None:
     assert random_percentile(0.25, [0.1, 0.2, 0.3]) == pytest.approx(
         100.0 * 2.0 / 3.0
     )
+
+
+
+# ===========================================================================
+# build_metrics_bundle robustness: empty / missing strategy series -> NaN,
+# and the scorecard then marks the dependent criteria unavailable.
+# ===========================================================================
+def _results_without_timesfm() -> pd.DataFrame:
+    """Build a results table over 2 dates for every strategy EXCEPT timesfm_long_only.
+
+    Includes equal_weight, spy, mom20, mom60 (and timesfm_long_short, which the
+    bundle ignores) at both 5 and 10 bps, so the shared realised matrix / scorecard
+    inputs exist but the timesfm_long_only 5/10 bps series are EMPTY.
+
+    Returns:
+        A long-format results DataFrame missing the timesfm_long_only strategy.
+    """
+    dates: list[pd.Timestamp] = [
+        pd.Timestamp("2020-01-31"),
+        pd.Timestamp("2020-02-28"),
+    ]
+    strategies: list[str] = [
+        "equal_weight",
+        "spy",
+        "mom20",
+        "mom60",
+        "timesfm_long_short",
+    ]
+    rows: list[dict[str, object]] = []
+    for strategy in strategies:
+        for cost_bps in (5, 10):
+            for j, date in enumerate(dates):
+                net: float = 0.01 * (j + 1)
+                rows.append(
+                    {
+                        "strategy": strategy,
+                        "decision_date": pd.Timestamp(date),
+                        "gross_return": net,
+                        "turnover": 0.0,
+                        "cost_bps": int(cost_bps),
+                        "transaction_cost": 0.0,
+                        "net_return": net,
+                    }
+                )
+    return pd.DataFrame(rows, columns=_RESULT_COLUMNS)
+
+
+def test_bundle_missing_timesfm_strategy_is_nan_and_scorecard_unavailable() -> None:
+    """A results table missing timesfm_long_only -> NaN fields; criteria 3,5,6 unavailable.
+
+    Because the timesfm_long_only 5/10 bps net-return series are empty,
+    build_metrics_bundle must set max_dd_timesfm, excess_vs_ew_5/10 and
+    excess_vs_spy_5/10 to NaN (rather than calling max_drawdown/net_excess_return
+    on an empty series). evaluate_scorecard must then fail criteria 3, 5 and 6 with
+    the "required metric unavailable" note.
+    """
+    results: pd.DataFrame = _results_without_timesfm()
+    dates: list[pd.Timestamp] = [
+        pd.Timestamp("2020-01-31"),
+        pd.Timestamp("2020-02-28"),
+    ]
+    ic: pd.Series = pd.Series([0.1, 0.2], index=pd.Index(dates))
+    records: dict[tuple[str, pd.Timestamp], ForecastRecord] = {}
+    realised_matrix: pd.DataFrame = pd.DataFrame(
+        {"XLK": [0.01, 0.02]}, index=pd.Index(dates)
+    )
+
+    bundle: MetricsBundle = build_metrics_bundle(
+        results,
+        ic,
+        records,
+        realised_matrix,
+        dates,
+        delivery_complete=True,
+    )
+
+    # The timesfm_long_only-dependent fields are NaN.
+    assert math.isnan(bundle.max_dd_timesfm)
+    assert math.isnan(bundle.excess_vs_ew_5)
+    assert math.isnan(bundle.excess_vs_spy_5)
+    assert math.isnan(bundle.excess_vs_ew_10)
+    assert math.isnan(bundle.excess_vs_spy_10)
+
+    # The scorecard fails criteria 3, 5 and 6 with the unavailable note.
+    results_by_number: dict[int, object] = {
+        r.number: r for r in evaluate_scorecard(bundle)
+    }
+    for number in (3, 5, 6):
+        criterion = results_by_number[number]
+        assert criterion.passed is False
+        assert criterion.note == "required metric unavailable"
+
+
+def test_bundle_misaligned_benchmark_index_is_nan() -> None:
+    """If timesfm and a benchmark have different decision-date indices, excess is NaN.
+
+    build_metrics_bundle aligns a strategy and its benchmark only when their
+    indices match; a mismatched index (e.g. the benchmark trades on a different
+    date) must yield NaN excess rather than a silently misaligned comparison.
+    """
+    # timesfm_long_only on dates A,B; equal_weight on dates A,C (B != C).
+    date_a: pd.Timestamp = pd.Timestamp("2020-01-31")
+    date_b: pd.Timestamp = pd.Timestamp("2020-02-28")
+    date_c: pd.Timestamp = pd.Timestamp("2020-03-31")
+
+    rows: list[dict[str, object]] = []
+
+    def _add(strategy: str, date: pd.Timestamp, net: float) -> None:
+        for cost_bps in (5, 10):
+            rows.append(
+                {
+                    "strategy": strategy,
+                    "decision_date": pd.Timestamp(date),
+                    "gross_return": net,
+                    "turnover": 0.0,
+                    "cost_bps": int(cost_bps),
+                    "transaction_cost": 0.0,
+                    "net_return": net,
+                }
+            )
+
+    _add("timesfm_long_only", date_a, 0.02)
+    _add("timesfm_long_only", date_b, 0.03)
+    _add("equal_weight", date_a, 0.01)
+    _add("equal_weight", date_c, 0.01)  # different second date -> index mismatch
+    _add("spy", date_a, 0.01)
+    _add("spy", date_b, 0.01)
+    results: pd.DataFrame = pd.DataFrame(rows, columns=_RESULT_COLUMNS)
+
+    bundle: MetricsBundle = build_metrics_bundle(
+        results,
+        pd.Series([0.1, 0.2], index=pd.Index([date_a, date_b])),
+        {},
+        pd.DataFrame({"XLK": [0.01, 0.02]}, index=pd.Index([date_a, date_b])),
+        [date_a, date_b],
+        delivery_complete=True,
+    )
+
+    # equal_weight index (A, C) != timesfm index (A, B) -> excess vs EW is NaN.
+    assert math.isnan(bundle.excess_vs_ew_5)
+    assert math.isnan(bundle.excess_vs_ew_10)
+    # spy index (A, B) matches timesfm -> excess vs SPY is defined (finite).
+    assert not math.isnan(bundle.excess_vs_spy_5)
