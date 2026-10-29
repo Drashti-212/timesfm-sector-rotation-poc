@@ -452,13 +452,23 @@ def test_build_report_writes_all_files(tmp_path) -> None:
         [0.10, 0.12, 0.08], index=pd.Index(dates), dtype=float
     )
 
-    # Empty records mapping (the calibration chart must still be produced) and a
-    # small realised log matrix with at least one ticker column.
-    records: dict[tuple[str, pd.Timestamp], ForecastRecord] = {}
+    # Realistic records for two tickers on each date, aligned to the realised
+    # log matrix, so the interval-calibration chart has points and bands to
+    # draw (an empty records mapping would render a blank chart).
     realised_log_matrix: pd.DataFrame = pd.DataFrame(
-        {"XLK": [0.01, -0.02, 0.015]},
+        {
+            "XLK": [0.01, -0.02, 0.015],
+            "XLF": [0.00, 0.03, -0.01],
+        },
         index=pd.Index(dates),
     )
+    records: dict[tuple[str, pd.Timestamp], ForecastRecord] = {}
+    for ticker in ("XLK", "XLF"):
+        for date in dates:
+            # Band [-0.05, +0.05] in 20-day log-return units via step-20 p10/p90.
+            records[(ticker, date)] = _record(
+                ticker, date, point=0.0, p10=-0.05, p90=0.05
+            )
 
     metrics: MetricsBundle = _bundle()
     scorecard: list[CriterionResult] = evaluate_scorecard(metrics)
@@ -510,3 +520,57 @@ def test_build_report_writes_all_files(tmp_path) -> None:
         f"scorecard.csv should have header + 9 rows, got {len(data_rows)}"
     )
     assert len(data_rows) - 1 == 9
+
+
+
+def test_interval_calibration_chart_has_plotted_artists(tmp_path, monkeypatch) -> None:
+    """The interval-calibration chart draws band patches and realised points.
+
+    Regression guard for the previously-blank chart: with realistic records and a
+    realised log matrix, the calibration figure's axes must contain both the
+    shaded p10-p90 band patches (fill_between -> PolyCollection) and the realised
+    return points (scatter -> PathCollection). We keep the figure alive by stubbing
+    plt.close, then inspect the current axes.
+    """
+    import matplotlib.pyplot as plt
+
+    from src.report import _plot_interval_calibration
+
+    dates = [
+        pd.Timestamp("2019-07-01"),
+        pd.Timestamp("2019-07-29"),
+    ]
+    realised_log_matrix = pd.DataFrame(
+        {"XLK": [0.01, 0.20], "XLF": [-0.30, 0.00]},
+        index=pd.Index(dates),
+    )
+    records = {}
+    for ticker in ("XLK", "XLF"):
+        for date in dates:
+            records[(ticker, date)] = _record(
+                ticker, date, point=0.0, p10=-0.05, p90=0.05
+            )
+
+    created = {}
+
+    real_close = plt.close
+
+    def _capture_close(fig=None):
+        # Keep the figure so the test can inspect its artists; do not close it.
+        created["fig"] = fig
+        return None
+
+    monkeypatch.setattr(plt, "close", _capture_close)
+    try:
+        out_path = str(tmp_path / "interval_calibration.png")
+        _plot_interval_calibration(out_path, records, realised_log_matrix, 0.5)
+        fig = created["fig"]
+        assert fig is not None
+        ax = fig.axes[0]
+        # fill_between adds PolyCollection band patches; scatter adds point
+        # collections. With 4 (ticker, date) pairs there must be artists.
+        assert len(ax.collections) > 0, "calibration axes have no plotted artists"
+        assert os.path.exists(out_path)
+    finally:
+        monkeypatch.setattr(plt, "close", real_close)
+        real_close("all")

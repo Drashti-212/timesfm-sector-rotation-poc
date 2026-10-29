@@ -529,11 +529,7 @@ def _plot_equity_curves(
     by_strategy: dict[str, pd.Series] = _net_returns_by_strategy(results, 5)
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    # Plot against integer x positions with date tick labels: on some
-    # matplotlib builds a datetime x-axis combined with axhline faults in the
-    # native transform code, so we avoid datetime units entirely.
-    max_positions: int = 0
-    tick_labels: list[str] = []
+    plotted: bool = False
     for strategy in _EQUITY_STRATEGIES:
         series: pd.Series | None = by_strategy.get(strategy)
         if series is None or series.empty:
@@ -546,27 +542,17 @@ def _plot_equity_curves(
         equity: np.ndarray = np.cumprod(
             1.0 + ordered.to_numpy(dtype=float)
         ) - 1.0
-        positions: np.ndarray = np.arange(len(equity), dtype=float)
-        ax.plot(positions, equity, label=strategy)
-        if len(positions) > max_positions:
-            max_positions = len(positions)
-            tick_labels = [str(pd.Timestamp(d).date()) for d in ordered.index]
+        ax.plot(ordered.index, equity, label=strategy)
+        plotted = True
 
-    # Explicit zero line across the plotted x-range (avoids axhline).
-    if max_positions > 0:
-        ax.plot([0.0, float(max_positions - 1)], [0.0, 0.0],
-                color="black", linewidth=0.8)
-        step: int = max(1, max_positions // 10)
-        tick_positions: list[int] = list(range(0, max_positions, step))
-        ax.set_xticks(tick_positions)
-        ax.set_xticklabels(
-            [tick_labels[i] for i in tick_positions]
-        )
-        ax.legend(loc="best")
-
+    ax.axhline(0.0, color="black", linewidth=0.8)
     ax.set_title(title)
     ax.set_xlabel("Decision date")
     ax.set_ylabel("Cumulative net return (5 bps)")
+    if plotted:
+        ax.legend(loc="best")
+    fig.autofmt_xdate()
+    fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
 
@@ -581,31 +567,25 @@ def _plot_ic_over_time(path: str, ic_series_timesfm: pd.Series) -> None:
     """
     fig, ax = plt.subplots(figsize=(10, 6))
 
-    # Integer x positions with date tick labels (avoid datetime-axis +
-    # axhline native fault on some matplotlib builds).
     defined: pd.Series = ic_series_timesfm.dropna()
     if not defined.empty:
         ordered: pd.Series = defined.sort_index()
-        values: np.ndarray = ordered.to_numpy(dtype=float)
-        positions: np.ndarray = np.arange(len(values), dtype=float)
-        ax.bar(positions, values, width=0.8)
-        mean_value: float = float(values.mean())
-        x0: float = -0.5
-        x1: float = float(len(values) - 1) + 0.5
-        ax.plot([x0, x1], [mean_value, mean_value], color="red",
-                linestyle="--", label=f"mean IC = {mean_value:.4f}")
-        ax.plot([x0, x1], [0.0, 0.0], color="black", linewidth=0.8)
-        step: int = max(1, len(values) // 10)
-        tick_positions: list[int] = list(range(0, len(values), step))
-        ax.set_xticks(tick_positions)
-        ax.set_xticklabels(
-            [str(pd.Timestamp(ordered.index[i]).date()) for i in tick_positions]
+        ax.bar(ordered.index, ordered.to_numpy(dtype=float), width=10.0)
+        mean_value: float = float(ordered.mean())
+        ax.axhline(
+            mean_value,
+            color="red",
+            linestyle="--",
+            label=f"mean IC = {mean_value:.4f}",
         )
         ax.legend(loc="best")
 
+    ax.axhline(0.0, color="black", linewidth=0.8)
     ax.set_title("Information coefficient over time")
     ax.set_xlabel("Decision date")
     ax.set_ylabel("Per-date Spearman IC")
+    fig.autofmt_xdate()
+    fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
 
@@ -666,9 +646,22 @@ def _plot_interval_calibration(
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
-    # p10-p90 bands as faint vertical lines behind the realised points.
+    # p10-p90 bands as a shaded span behind each realised point. Each
+    # (date, ticker) pair occupies one integer x position; the band is shaded
+    # over a narrow window centred on that position via fill_between.
+    half_width: float = 0.4
+    first_band: bool = True
     for pos, lower, upper in zip(positions, lowers, uppers):
-        ax.plot([pos, pos], [lower, upper], color="lightgray", linewidth=1.0)
+        ax.fill_between(
+            [pos - half_width, pos + half_width],
+            [lower, lower],
+            [upper, upper],
+            color="lightsteelblue",
+            alpha=0.6,
+            linewidth=0.0,
+            label="p10-p90 band" if first_band else None,
+        )
+        first_band = False
 
     inside_positions: list[int] = [
         p for p, flag in zip(positions, inside_flags) if flag
@@ -705,6 +698,7 @@ def _plot_interval_calibration(
     ax.set_title(f"Interval calibration (share inside = {_fmt(calibration)})")
     ax.set_xlabel("(date, ticker) pair, ordered")
     ax.set_ylabel("Realised 20-day log return")
+    fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
 

@@ -572,6 +572,54 @@
         "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
         "timestamp": 1793266658860
       }
+    ],
+    "13. Entry-point CLI": [
+      {
+        "executionId": "d590a32e-acaa-4827-b642-6ab60c13b1c8",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793269732609
+      },
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793270737031
+      }
+    ],
+    "13.1 Write determinism and artifacts integration tests (TimesFM mocked)": [
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793270785223
+      },
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793271067058
+      }
+    ],
+    "14. Reproducibility and delivery artifacts": [
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793271079346
+      },
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793271332884
+      }
+    ],
+    "14.1 Create placeholder `requirements.txt` and the README": [
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793271088804
+      },
+      {
+        "executionId": "728da692-f346-4ed1-a69a-8502cab0d415",
+        "chatSessionId": "sess_5ea9d2ab-19a7-435f-9c61-82650fe17b44",
+        "timestamp": 1793271332827
+      }
     ]
   }
 }

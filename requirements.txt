@@ -1,0 +1,40 @@
+﻿# requirements.txt - PLACEHOLDER (no guessed version pins)
+# =============================================================================
+# This is NOT the final, committed requirements.txt. The dependencies below are
+# listed UNPINNED on purpose - none of these versions are guessed.
+#
+# The final committed requirements.txt MUST pin EVERY dependency to an exact
+# version (Requirement 11.3). Those exact pins are produced by running, in the
+# SAME LOCAL timesfm environment that produces the results, AFTER the smoke test
+# (src/timesfm_smoke.py) has passed and exited 0:
+#
+#     pip freeze > requirements.txt
+#
+# Running pip freeze in that same local environment captures the exact versions
+# that actually produced a working smoke test and the end-to-end run, so the
+# pins match the environment that generated the results.
+#
+# TimesFM is installed per the OFFICIAL TimesFM repo README. The results in this
+# POC were produced with:
+#     - timesfm library version: 3.0.2
+#     - checkpoint:              google/timesfm-2.5-200m-pytorch
+# (The 3.0.2 library loads the 2.5 200M checkpoint; the run uses TimesFM 2.5
+# zero-shot.) The report records both the library version and the checkpoint.
+# =============================================================================
+
+# Model: TimesFM, installed per the official TimesFM repo README.
+# Results produced with timesfm==3.0.2 loading checkpoint
+# google/timesfm-2.5-200m-pytorch.
+timesfm
+
+# Core numerical / data stack
+torch
+numpy
+pandas
+pyarrow
+scipy
+matplotlib
+
+# Testing
+hypothesis
+pytest

@@ -230,17 +230,17 @@ Python runs locally using C:\Users\drash\miniforge3\envs\timesfm\python.exe, wit
     - **Property 22: Decision rule yields exactly one recommendation** — generators cover the "exactly one of criteria 5-8 fails" boundary
     - **Validates: Requirements 9.1, 9.2, 9.3, 9.4**
 
-- [ ] 13. Entry-point CLI
+- [x] 13. Entry-point CLI
   - Create `run_pipeline.py` with `parse_args` (`--prices-csv`, `--cache-path`, `--output-dir`, `--seed`) and `main(...)` running every stage end to end with no manual steps: load -> rebalance dates -> forecasts (resumable, per-date batched) -> baselines -> backtest -> metrics -> scorecard -> report
     - Flow the single `seed` into the random baseline and every stochastic operation; reuse all cached forecasts; produce the scorecard, report, and results tables as artifacts
     - _Requirements: 11.1, 11.2, 11.4, 11.5, 11.8_
 
-  - [ ]* 13.1 Write determinism and artifacts integration tests (TimesFM mocked)
+  - [x]* 13.1 Write determinism and artifacts integration tests (TimesFM mocked)
     - Two full runs over the same inputs and cache produce identical scorecard metric values and pass/fail results (Req 11.5); a successful run produces the scorecard, report, charts, and results tables (Req 10.1, 11.2, 11.10)
     - _Requirements: 11.2, 11.5, 11.10_
 
-- [ ] 14. Reproducibility and delivery artifacts
-  - [ ] 14.1 Create placeholder `requirements.txt` and the README
+- [x] 14. Reproducibility and delivery artifacts
+  - [x] 14.1 Create placeholder `requirements.txt` and the README
     - `requirements.txt` placeholder listing dependencies with no guessed versions (timesfm per the official repo README, torch, numpy, pandas, pyarrow, scipy, matplotlib, hypothesis, pytest) and a note that exact pins come from `pip freeze` in Colab after the smoke test passes
     - README documents the single `argparse` entry-point command and flags, mounting Google Drive and pointing `--cache-path` at a Drive path, and the one-command rerun workflow
     - _Requirements: 11.3, 11.6, 11.7, 11.9_
